@@ -16,6 +16,7 @@ The system is a 50 Hz reduced-order representation of the GB grid with 87 buses 
 | `nothing.dst` | No-disturbance run |
 | `obs.dat` | Observables selection |
 | `cmd.txt` | RAMSES command file listing the data files above |
+| `GB-Network.cfg` | STEPSS scenario file: opens the `cmd.txt` case in the STEPSS GUI with **File > Load configuration**. Paths are relative to this folder, so it travels with a copy or a move |
 | `analysis.ipynb` | Wide-area monitoring example notebook (stepss); currently configured for the Nordic test system data and kept here as a starting point, adapt the data-file names to the GB files before use |
 | `GBSystemLCC.pdf`, `GBSystemLCC.png` | One-line diagram of the system |
 
