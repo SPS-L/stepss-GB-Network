@@ -17,7 +17,6 @@ The system is a 50 Hz reduced-order representation of the GB grid with 87 buses 
 | `obs.dat` | Observables selection |
 | `cmd.txt` | RAMSES command file listing the data files above |
 | `GB-Network.cfg` | STEPSS scenario file: opens the `cmd.txt` case in the STEPSS GUI with **File > Load configuration**. Paths are relative to this folder, so it travels with a copy or a move |
-| `analysis.ipynb` | Wide-area monitoring example notebook (stepss); currently configured for the Nordic test system data and kept here as a starting point, adapt the data-file names to the GB files before use |
 | `GBSystemLCC.pdf`, `GBSystemLCC.png` | One-line diagram of the system |
 
 ## Quick Start
@@ -67,11 +66,11 @@ Validated on a no-disturbance run: every bus holds its power-flow voltage, and t
 farms sit at their initial power and rotor speed. Bus 5 settles 0.001 pu above the
 power-flow value within 0.2 s, which is the HVDC control reaching its own equilibrium.
 
-**`analysis.ipynb` in this folder still does not run**, for an unrelated reason: it loads
-`dyn_A.dat`, `volt_rat_A.dat` and `settings1.dat`, which are the *Nordic* test system's
-filenames and are not present here, and it calls `plt.grid(b=True, ...)`, a keyword removed
-in Matplotlib 3.5. It appears to be an unadapted copy of the Nordic tutorial.
-`CurrentStatus.ipynb` is the working notebook for this system.
+`CurrentStatus.ipynb` is the notebook for this system. An `analysis.ipynb` used to sit
+beside it and was deleted: it was an unadapted copy of the Nordic wide-area monitoring
+tutorial, loading `dyn_A.dat`, `volt_rat_A.dat` and `settings1.dat`, which are the *Nordic*
+filenames and have never existed here. It was misfiled at the initial import and never ran
+in this repository. The Nordic original is in `stepss-IEEE-Nordic-Test-system`.
 
 ## Documentation
 
