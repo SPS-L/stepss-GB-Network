@@ -1,8 +1,8 @@
 # GB Network Test System
 
-RAMSES/STEPSS model of a reduced Great Britain (GB) transmission system with HVDC-LCC interconnections, for dynamic simulation and wide-area monitoring/control studies.
+RAMSES/STEPSS model of a reduced Great Britain (GB) transmission system with HVDC interconnections (three LCC links and two VSC links), for dynamic simulation and wide-area monitoring/control studies.
 
-The system is a 50 Hz reduced-order representation of the GB grid with 87 buses and 37 synchronous machines (thermal and CCGT units with AVR/PSS and governor models), shunt compensation, and HVDC links modelled as two-port converter injectors. A one-line diagram is provided in `GBSystemLCC.pdf`/`GBSystemLCC.png`.
+The system is a 50 Hz reduced-order representation of the GB grid with 87 buses and 36 synchronous machines (thermal and CCGT units with AVR/PSS and governor models), shunt compensation, and HVDC links modelled as two-port converter injectors. A one-line diagram is provided in `GBSystemLCC.pdf`/`GBSystemLCC.png`.
 
 ## Repository Files
 
@@ -41,7 +41,7 @@ Or run the RAMSES executable directly with `cmd.txt`. Run from the repository ro
 
 ## Status
 
-**Runs flat for the full 240 s of `nothing.dst`** with RAMSES 3.84, every bus holding its power-flow voltage. At initialisation RAMSES creates a single `M_` mismatch load, 0.011 Mvar at bus 17, which is power-flow rounding.
+**Runs flat for the full 240 s of `nothing.dst`** with RAMSES 3.84: every machine holds its operating point (largest speed excursion 8e-8 pu) and so does every AC bus away from the HVDC links. The buses of the EWIC and Nemo VSC converters do not: within the first second they move by up to 0.0039 pu (at 27IC2) and settle at a slightly different point, which they hold to the end. Tracked in [#2](https://github.com/SPS-L/stepss-test-systems/issues/2). At initialisation RAMSES creates a single `M_` mismatch load, 0.011 Mvar at bus 17, which is power-flow rounding.
 
 That was not true before November 2026. Every version of this case up to then stopped with `Divergence` at t = 0.35 s and created 16 `M_` loads at initialisation. An earlier version of this section claimed the case ran; that came from a check that `stepss.sim().execSim()` returned without an exception, which it also does after a divergence, so a run that ended at 0.34 s was read as a pass. `CurrentStatus.ipynb` now checks how far the trajectory got.
 
