@@ -1,76 +1,84 @@
 # Interconnections
 
 
-#  MODEL NAME : twop_vsc_hq
+#  MODEL NAME : HVDC_VSC (twop_HVDC_VSC)
 #  Data :
-#       prm(  1)=  R		phase reactor resistance in per unit
-#       prm(  2)=  L		phase reactor inductance in per unit
-#       prm(  3)=  Hdc		DC capacitor electrostatic inertia in seconds
-#       prm(  4)=  Snom	nominal rating of VSC
-#       prm(  5)=  Pnom	nominal active power of VSC
+#       prm(  1)=  R		phase reactor resistance (pu)
+#       prm(  2)=  L		phase reactor inductance (pu)
+#       prm(  3)=  Hdc		DC capacitor electrostatic inertia (s)
+#       prm(  4)=  Snom	nominal apparent power (MVA)
+#       prm(  5)=  Pnom	nominal active power (MW)
 #       prm(  6)=  Kp		current controller P gain
 #       prm(  7)=  Ki		current controller I gain
 #       prm(  8)=  Kpd		outer loop d-axis P gain
 #       prm(  9)=  Kid		outer loop d-axis I gain
 #       prm( 10)=  Kpq		outer loop q-axis P gain
 #       prm( 11)=  Kiq		outer loop q-axis I gain
-#       prm( 12)=  Kpw	PLL P gain
-#       prm( 13)=  Kiw	PLL I gain
-#       prm( 14)=  alpha1	P-V characteristic alpha coefficient
-#       prm( 15)=  beta1	P-V characteristic beta coefficient
-#       prm( 16)=  alpha2	Q-Vac characteristic alpha coefficient
-#       prm( 17)=  beta2	Q-Vac characteristic beta coefficient
+#       prm( 12)=  Kpw		PLL P gain
+#       prm( 13)=  Kiw		PLL I gain
+#       prm( 14)=  alpha1	P-Vdc characteristic: weight on active power
+#       prm( 15)=  beta1	P-Vdc characteristic: weight on DC voltage
+#       prm( 16)=  alpha2	Q-Vac characteristic: weight on reactive power
+#       prm( 17)=  beta2	Q-Vac characteristic: weight on AC voltage
+#       prm( 18)=  Vs1		AC voltage below which reactive support is activated (pu)
+#       prm( 19)=  Vs2		AC voltage at which full reactive support is activated (pu)
+#
+#  Each point-to-point link needs exactly one converter holding the DC voltage.
+#  The GB-side converter controls active power (alpha1=1, beta1=0) and the
+#  interconnector-side converter controls DC voltage (alpha1=0, beta1=-1).
+#  Both control reactive power (alpha2=-1, beta2=0).
 
 # VSC
 # East-West Interconnector
   BUSDC DC12   320.  ;
   BUSDC DC12IC   320.  ;
-  
-  LFRESV DC12   0.9821  0.  ;
+
+  LFRESV DC12   0.9820314  0.  ;
   LFRESV DC12IC   0.974511  0.  ;   #0.9944766
-  
-  LINE HVDC12IC DC12  DC12IC 3.025 0.00 0.00 1000.0 1  ; 
-  
-  # TWOP HVDC_VSC_SC <name> <bus1> <bus2> <S/A> FP FQ P Q (origin) FP FQ P Q (extremity)
-#   R L Hdc Snom Pnom Kp Ki Kpp Kip Kwi Kpq Kiq Kpw Kiw Vs1 Vs2
-  TWOP  HVDC_VSC_SC  12VSC  12  DC12  A
+
+  LINE HVDC12IC DC12  DC12IC 3.025 0.00 0.00 1000.0 1  ;
+
+  # TWOP HVDC_VSC <name> <bus1> <bus2> <S/A> FP FQ P Q (origin) FP FQ P Q (extremity)
+#   R L Hdc Snom Pnom Kp Ki Kpd Kid Kpq Kiq Kpw Kiw alpha1 beta1 alpha2 beta2 Vs1 Vs2
+  TWOP  HVDC_VSC  12VSC  12  DC12  A
       0.  0.  -500.0  0.   0.  0.  500.  0.
-      0.01  0.2  0.03024  1110  1000  0.2574  57.2958  4.5  10  0  0.1  30  200  10000  0.9  0.5
+      0.01  0.2  0.03024  1110  1000  0.2574  57.2958  4.5  10  0.1  30  200  10000  1  0  -1  0  0.9  0.5
       ;
-  
-  # TWOP HVDC_VSC_SC <name> <bus1> <bus2> <S/A> FP FQ P Q (origin) FP FQ P Q (extremity)
-#   R L Hdc Snom Pnom Kp Ki Kpp Kip Kwi Kpq Kiq Kpw Kiw Vs1 Vs2
-  TWOP  HVDC_VSC_SC  12ICVSC  12IC  DC12IC  A
-      0.  0.  500.0  0.   0.  0.  -500.  0.
-      0.01  0.2  0.03024  1110  1000  0.2574  57.2958  4.5  10  0  0.1  30  200  10000  0.9  0.5
+
+  # TWOP HVDC_VSC <name> <bus1> <bus2> <S/A> FP FQ P Q (origin) FP FQ P Q (extremity)
+#   R L Hdc Snom Pnom Kp Ki Kpd Kid Kpq Kiq Kpw Kiw alpha1 beta1 alpha2 beta2 Vs1 Vs2
+  TWOP  HVDC_VSC  12ICVSC  12IC  DC12IC  A
+      0.  0.  496.1710  0.   0.  0.  -496.1710  0.
+      0.01  0.2  0.03024  1110  1000  0.2574  57.2958  4.5  10  0.1  30  200  10000  0  -1  -1  0  0.9  0.5
       ;
-  
+
 # Nemo
   BUSDC DC27   400.  ;
   BUSDC DC27IC   400.  ;
-  
-  LFRESV DC27   0.9727178  0.  ;
+
+  LFRESV DC27   0.9727084  0.  ;
   LFRESV DC27IC   0.96299  0.  ;   #0.9944766
-  
-  LINE HVDC27IC DC27  DC27IC 3.025 0.00 0.00 1000.0 1  ; 
-  
-  # TWOP HVDC_VSC_SC <name> <bus1> <bus2> <S/A> FP FQ P Q (origin) FP FQ P Q (extremity)
-#   R L Hdc Snom Pnom Kp Ki Kpp Kip Kwi Kpq Kiq Kpw Kiw Vs1 Vs2
-  TWOP  HVDC_VSC_SC  27VSC  27  DC27  A
+
+  LINE HVDC27IC DC27  DC27IC 3.025 0.00 0.00 1000.0 1  ;
+
+  # Pnom = Snom: the converter current limit is Pnom/Snom, and Pnom = 1000 MW
+  # capped it at 0.901 pu, below the 0.922 pu that 1000 MW needs at bus 27.
+  # TWOP HVDC_VSC <name> <bus1> <bus2> <S/A> FP FQ P Q (origin) FP FQ P Q (extremity)
+#   R L Hdc Snom Pnom Kp Ki Kpd Kid Kpq Kiq Kpw Kiw alpha1 beta1 alpha2 beta2 Vs1 Vs2
+  TWOP  HVDC_VSC  27VSC  27  DC27  A
       0.  0.  -1000.0  0.   0.  0.  1000.  0.
-      0.01  0.2  0.03024  1110  1000  0.2574  57.2958  4.5  10  0  0.1  30  200  10000  0.9  0.5
+      0.01  0.2  0.03024  1110  1110  0.2574  57.2958  4.5  10  0.1  30  200  10000  1  0  -1  0  0.9  0.5
       ;
-  
-  # TWOP HVDC_VSC_SC <name> <bus1> <bus2> <S/A> FP FQ P Q (origin) FP FQ P Q (extremity)
-#   R L Hdc Snom Pnom Kp Ki Kpp Kip Kwi Kpq Kiq Kpw Kiw Vs1 Vs2
-  TWOP  HVDC_VSC_SC  27ICVSC  27IC2  DC27IC  A
-      0.  0.  1000.0  0.   0.  0.  -1000.  0.
-      0.01  0.2  0.03024  1110  1000  0.2574  57.2958  4.5  10  0  0.1  30  200  10000  0.9  0.5
+
+  # TWOP HVDC_VSC <name> <bus1> <bus2> <S/A> FP FQ P Q (origin) FP FQ P Q (extremity)
+#   R L Hdc Snom Pnom Kp Ki Kpd Kid Kpq Kiq Kpw Kiw alpha1 beta1 alpha2 beta2 Vs1 Vs2
+  TWOP  HVDC_VSC  27ICVSC  27IC2  DC27IC  A
+      0.  0.  990.0090  0.   0.  0.  -990.0090  0.
+      0.01  0.2  0.03024  1110  1110  0.2574  57.2958  4.5  10  0.1  30  200  10000  0  -1  -1  0  0.9  0.5
       ;
 
 
-#  MODEL NAME : twop_HVDC_LCC           
-#  MODEL DESCRIPTION FILE : twop_HVDC_lcc.txt
+#  MODEL NAME : HVDC_LCC (twop_HVDC_LCC)
 #  Data :
 #       prm(  1)=  p          # number of poles (1 or 2)
 #       prm(  2)=  rec_ctl    # initial rectifier control : 1= current control, 2= power control
@@ -89,27 +97,30 @@
 #       prm( 15)=  Idset      # initial value (and setpoint if rec_ctl=1) of DC current (kA)
 #       prm( 16)=  nr         # initial rectifier transformer ratio (pu/pu)
 #       prm( 17)=  ni         # initial inverter transformer ratio (pu/pu)
-#       prm( 18)=  alphamin   # minimum firing angle (rad)
-#       prm( 19)=  DeltaId    # decrease in DC current when the inverter controls current (kA)
-#       prm( 20)=  gammamin   # minimum extinctin angle (rad)
+#
+#  Er and Ei are sized so that each link starts at a firing angle of 15 deg
+#  and an extinction angle of 18 deg at its scheduled power and DC current.
+#  The values used earlier (250, 450 and 540 kV) started all three links near
+#  70 deg, which needs a large shunt capacitor at each weak inverter bus and
+#  made the case diverge within 0.4 s.
 
 # LCC
 # Moyle
   #   p rec_ctl inv_ctl Br Bi Er Ei Rcr Xcr Rci Xci RL Rcomp Tp Idset nr ni
   TWOP  HVDC_LCC  HVDC1  5  5IC  A
       0.  0.  -10.  -10.   0.  0.  10.  10.
-      1  2  1  2  2  250  250  0  2.1202  0  2.1197  3  0  1  0.04  0.9  0.9
+      1  2  1  2  2  87.4  88.4  0  2.1202  0  2.1197  3  0  1  0.04  0.9  0.9
       ;
 
 #
   #   p rec_ctl inv_ctl Br Bi Er Ei Rcr Xcr Rci Xci RL Rcomp Tp Idset nr ni
   TWOP  HVDC_LCC  HVDC2  26  26IC  A
       0.  0.  -1022.29966  -55.67607   0.  0.  1022.29966  55.67607
-      1  2  1  2  2  450  450  0  2.1202  0  2.1197  3  0  1  2.25  0.9  0.9
+      1  2  1  2  2  164.0  160.2  0  2.1202  0  2.1197  3  0  1  2.25  0.9  0.9
       ;
 #
   #   p rec_ctl inv_ctl Br Bi Er Ei Rcr Xcr Rci Xci RL Rcomp Tp Idset nr ni
   TWOP  HVDC_LCC  HVDC3  27  27IC  A
       0.  0.  -1597.99943  -1245.578631   0.  0.  1597.99943  1245.578631
-      1  2  1  2  2  540  540  0  2.1202  0  2.1197  3  0  1  3  0.9  0.9
+      1  2  1  2  2  193.2  188.4  0  2.1202  0  2.1197  3  0  1  3  0.9  0.9
       ;
